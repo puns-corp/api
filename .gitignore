@@ -91,6 +91,28 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
+bin/Debug/netcoreapp3.1/Properties/launchSettings.json
+bin/Debug/netcoreapp3.1/PunsApi.deps.json
+bin/Debug/netcoreapp3.1/PunsApi.dll
+bin/Debug/netcoreapp3.1/PunsApi.pdb
+bin/Debug/netcoreapp3.1/PunsApi.runtimeconfig.dev.json
+obj/Debug/netcoreapp3.1/PunsApi.AssemblyInfo.cs
+obj/Debug/netcoreapp3.1/PunsApi.AssemblyInfoInputs.cache
+obj/Debug/netcoreapp3.1/PunsApi.assets.cache
+obj/Debug/netcoreapp3.1/PunsApi.csproj.FileListAbsolute.txt
+obj/Debug/netcoreapp3.1/PunsApi.csprojAssemblyReference.cache
+obj/Debug/netcoreapp3.1/PunsApi.dll
+obj/Debug/netcoreapp3.1/PunsApi.pdb
+obj/Debug/netcoreapp3.1/staticwebassets/PunsApi.StaticWebAssets.Manifest.cache
+obj/PunsApi.csproj.nuget.cache
+obj/PunsApi.csproj.nuget.dgspec.json
+obj/PunsApi.csproj.nuget.g.props
+obj/PunsApi.csproj.nuget.g.targets
+obj/project.assets.json
+
+
+
+
 
 # Chutzpah Test files
 _Chutzpah*
