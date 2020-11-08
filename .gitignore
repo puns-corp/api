@@ -431,3 +431,7 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+obj/Debug/netcoreapp3.1/PunsApi.AssemblyInfo.cs
+obj/Debug/netcoreapp3.1/PunsApi.assets.cache
+obj/Debug/netcoreapp3.1/PunsApi.csprojAssemblyReference.cache
+
