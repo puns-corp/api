@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  punsapi:
+    image: ${DOCKER_REGISTRY-}punsapi
+    build:
+      context: .
+      dockerfile: Dockerfile
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    ports: 
+        - "1433-1433"
+    environment:
+      SA_PASSWORD: "!zaliczeNIE777"
+      ACCEPT_EULA: "Y"
+ 
+   

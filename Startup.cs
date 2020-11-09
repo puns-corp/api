@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,13 +25,24 @@ namespace PunsAPI
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        //This method gets called by the runtime.Use this method to add services to the container.
+        //public void ConfigureServices(IServiceCollection services)
+        //{
+        //    services.AddControllers();
+
+        //    services.AddDbContext<AppDbContext>(options =>
+        //        options.UseSqlServer(Configuration.GetConnectionString("SQLExpress")));
+        //}
         public void ConfigureServices(IServiceCollection services)
         {
+            // Database connection string.
+            // Make sure to update the Password value below from "Your_password123" to your actual password.
+            var connection = @"Server=db;Database=master;User=sa;Password=!zaliczeNIE777;";
             services.AddControllers();
-
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SQLExpress")));
+            // This line uses 'UseSqlServer' in the 'options' parameter
+            // with the connection string defined above.
+            services.AddDbContext<AppDbContext>(
+                options => options.UseSqlServer(connection));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
