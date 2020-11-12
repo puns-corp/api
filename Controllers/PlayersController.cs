@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PunsApi.Data;
 using PunsApi.Models;
 
 namespace PunsApi.Controllers
@@ -24,14 +25,14 @@ namespace PunsApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Player>>> GetPlayer()
         {
-            return await _context.Player.ToListAsync();
+            return await _context.Players.ToListAsync();
         }
 
         // GET: api/Players/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Player>> GetPlayer(Guid id)
         {
-            var player = await _context.Player.FindAsync(id);
+            var player = await _context.Players.FindAsync(id);
 
             if (player == null)
             {
@@ -47,7 +48,7 @@ namespace PunsApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPlayer(Guid id, Player player)
         {
-            if (id != player.ID)
+            if (id != player.Id)
             {
                 return BadRequest();
             }
@@ -79,23 +80,23 @@ namespace PunsApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Player>> PostPlayer(Player player)
         {
-            _context.Player.Add(player);
+            _context.Players.Add(player);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetPlayer", new { id = player.ID }, player);
+            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
         }
 
         // DELETE: api/Players/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Player>> DeletePlayer(Guid id)
         {
-            var player = await _context.Player.FindAsync(id);
+            var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
                 return NotFound();
             }
 
-            _context.Player.Remove(player);
+            _context.Players.Remove(player);
             await _context.SaveChangesAsync();
 
             return player;
@@ -103,7 +104,7 @@ namespace PunsApi.Controllers
 
         private bool PlayerExists(Guid id)
         {
-            return _context.Player.Any(e => e.ID == id);
+            return _context.Players.Any(e => e.Id == id);
         }
     }
 }

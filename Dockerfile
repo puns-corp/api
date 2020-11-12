@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["PunsApi.csproj", ""]
-RUN dotnet restore "./PunsApi.csproj"
+COPY ["PunsApi.csproj", "./"]
+RUN dotnet restore "PunsApi.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/"
 RUN dotnet build "PunsApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -21,8 +21,3 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "PunsApi.dll"]
 
-FROM microsoft/mssql-server-linux:latest
-RUN mkdir -p /usr/work
-WORKDIR /usr/work
-COPY . /usr/work/
-EXPOSE 1433
