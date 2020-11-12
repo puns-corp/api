@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>a3c3fd65-eb61-4c9e-9755-c799d53ec941</ProjectGuid>
+    <ProjectGuid>3b5ce3b3-7379-49ea-937c-f6d962ed04f6</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/weatherforecast</DockerServiceUrl>
     <DockerServiceName>punsapi</DockerServiceName>
