@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PunsApi.Data;
 using PunsApi.Models;
+using PunsApi.Services.Interfaces;
+using PunsApi.Services;
 
 namespace PunsAPI
 {
@@ -49,6 +51,9 @@ namespace PunsAPI
                 x => x.UseSqlServer(connectionString));
 
             services.AddControllers();
+
+
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
         }
 
