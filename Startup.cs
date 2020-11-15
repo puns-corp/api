@@ -16,6 +16,8 @@ using NSwag;
 using NSwag.Generation.Processors.Security;
 using PunsApi.Data;
 using PunsApi.Models;
+using PunsApi.Services.Interfaces;
+using PunsApi.Services;
 
 namespace PunsAPI
 {
@@ -52,6 +54,7 @@ namespace PunsAPI
 
             services.AddControllers();
 
+
             services.AddSwaggerDocument(document =>
             {
                 document.Title = "PUNS App Documentation";
@@ -65,7 +68,7 @@ namespace PunsAPI
                     Description = "JWT Token - remember to add 'Bearer ' before the token",
                 }));
             });
-
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
