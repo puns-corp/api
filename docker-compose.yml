@@ -16,6 +16,7 @@ services:
       Database: "Puns"
   ms-sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: ms-sql-server
     environment:
       SA_PASSWORD: "Password_12345"
       ACCEPT_EULA: "Y"
