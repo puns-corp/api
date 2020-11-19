@@ -104,6 +104,8 @@ namespace PunsAPI
             {
                 endpoints.MapControllers();
             });
+
+            DbPreparation.Migrate(app);
         }
     }
 }

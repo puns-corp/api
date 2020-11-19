@@ -14,6 +14,9 @@ services:
       DBUser: "SA"
       DBPassword: "Password_12345"
       Database: "Puns"
+    depends_on:
+      - ms-sql-server
+
   ms-sql-server:
     image: mcr.microsoft.com/mssql/server:2019-latest
     container_name: ms-sql-server
