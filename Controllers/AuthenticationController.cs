@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using PunsApi.Requests.Authentication;
 using PunsApi.Services.Interfaces;
 
 namespace PunsApi.Controllers
@@ -16,9 +17,10 @@ namespace PunsApi.Controllers
             _authenticationService = authenticationService;
         }
 
-        public async Task<IActionResult> Register()
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] AuthenticateRequest request)
         {
-            var result = await _authenticationService.Register();
+            var result = await _authenticationService.Register(request);
 
             if (!result.Success)
                 return BadRequest(result);
