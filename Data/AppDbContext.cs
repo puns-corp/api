@@ -14,5 +14,7 @@ namespace PunsApi.Data
         public DbSet<Game> Games { get; set; }
 
         public DbSet<Result> Results{ get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

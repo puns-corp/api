@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201118172002_Init")]
+    [Migration("20201120203815_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,10 @@ namespace PunsApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("GameId")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("GameId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsGameMaster")
@@ -63,6 +66,35 @@ namespace PunsApi.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PlayerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId")
+                        .IsUnique();
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("PunsApi.Models.Result", b =>
@@ -129,7 +161,14 @@ namespace PunsApi.Migrations
                 {
                     b.HasOne("PunsApi.Models.Game", "Game")
                         .WithMany("Players")
-                        .HasForeignKey("GameId")
+                        .HasForeignKey("GameId");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.RefreshToken", b =>
+                {
+                    b.HasOne("PunsApi.Models.Player", "Player")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("PunsApi.Models.RefreshToken", "PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

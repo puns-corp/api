@@ -46,11 +46,12 @@ namespace PunsApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
                     Nick = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     IsGameMaster = table.Column<bool>(nullable: false),
                     IsPlaying = table.Column<bool>(nullable: false),
-                    GameId = table.Column<Guid>(nullable: false)
+                    GameId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,6 +60,28 @@ namespace PunsApi.Migrations
                         name: "FK_Players_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PlayerId = table.Column<Guid>(nullable: false),
+                    Token = table.Column<string>(nullable: true),
+                    Expires = table.Column<DateTime>(nullable: false),
+                    Revoked = table.Column<bool>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -95,6 +118,12 @@ namespace PunsApi.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_PlayerId",
+                table: "RefreshTokens",
+                column: "PlayerId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Results_PlayerId",
                 table: "Results",
                 column: "PlayerId");
@@ -102,6 +131,9 @@ namespace PunsApi.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
             migrationBuilder.DropTable(
                 name: "Results");
 
