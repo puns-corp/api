@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace PunsApi.Models
 {
@@ -12,17 +13,22 @@ namespace PunsApi.Models
         [Key]
         public Guid Id { get; set; }
 
+        public string Email { get; set; }
+
         public string Nick { get; set; }
 
+        [JsonIgnore]
         public string PasswordHash { get; set; }
 
-        public bool IsGameMaster { get; set; }
+        public bool IsGameMaster { get; set; } = false;
 
-        public bool IsPlaying { get; set; }
+        public bool IsPlaying { get; set; } = false;
 
         [ForeignKey("GameId")]
         public Game Game { get; set; }
 
-        public Guid GameId { get; set; }
+        public Guid? GameId { get; set; }
+
+        public RefreshToken RefreshToken { get; set; }
     }
 }
