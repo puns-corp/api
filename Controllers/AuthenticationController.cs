@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PunsApi.Requests.Authentication;
 using PunsApi.Services.Interfaces;
@@ -18,6 +19,7 @@ namespace PunsApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] AuthenticateRequest request)
         {
             var result = await _authenticationService.Register(request);
@@ -28,19 +30,39 @@ namespace PunsApi.Controllers
             return Ok(result);
         }
 
-        public Task<IActionResult> Login()
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] AuthenticateRequest request)
         {
-            throw new NotImplementedException();
+            var result = await _authenticationService.Login(request);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
-        public Task<IActionResult> RefreshToken()
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            throw new NotImplementedException();
+            var result = await _authenticationService.RefreshToken(request);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
-        public Task<IActionResult> RevokeToken()
+        [HttpPost]
+        public async Task<IActionResult> RevokeToken([FromBody] RefreshTokenRequest request)
         {
-            throw new NotImplementedException();
+            var result = await _authenticationService.RevokeToken(request);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
 
     }

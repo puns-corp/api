@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,10 +15,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using PunsApi.Data;
 using PunsApi.Helpers;
+using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services;
@@ -49,6 +53,30 @@ namespace PunsAPI
 
             services.AddControllers();
 
+            // configure strongly typed settings objects
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            // configure jwt authentication
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
 
             services.AddSwaggerDocument(document =>
             {
@@ -67,8 +95,7 @@ namespace PunsAPI
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
-
-
+            services.AddScoped<IJwtHelper, JwtHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
