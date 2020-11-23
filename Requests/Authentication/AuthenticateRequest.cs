@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PunsApi.Requests.Authentication
+namespace PunsApi.Requests.CreateRoom
 {
     public class AuthenticateRequest
     {

@@ -26,6 +26,4 @@ namespace PunsApi.Data
             }
         }
     }
-
-
 }

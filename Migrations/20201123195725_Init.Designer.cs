@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201120203815_Init")]
+    [Migration("20201123195725_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,9 +61,14 @@ namespace PunsApi.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Players");
                 });
@@ -162,6 +167,10 @@ namespace PunsApi.Migrations
                     b.HasOne("PunsApi.Models.Game", "Game")
                         .WithMany("Players")
                         .HasForeignKey("GameId");
+
+                    b.HasOne("PunsApi.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("PunsApi.Models.RefreshToken", b =>

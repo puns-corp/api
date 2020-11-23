@@ -59,9 +59,14 @@ namespace PunsApi.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Players");
                 });
@@ -160,6 +165,10 @@ namespace PunsApi.Migrations
                     b.HasOne("PunsApi.Models.Game", "Game")
                         .WithMany("Players")
                         .HasForeignKey("GameId");
+
+                    b.HasOne("PunsApi.Models.Room", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
                 });
 
             modelBuilder.Entity("PunsApi.Models.RefreshToken", b =>

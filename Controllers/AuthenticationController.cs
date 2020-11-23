@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PunsApi.Requests.Authentication;
+using PunsApi.Requests.CreateRoom;
 using PunsApi.Services.Interfaces;
 
 namespace PunsApi.Controllers

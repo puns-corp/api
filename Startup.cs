@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -96,11 +97,16 @@ namespace PunsAPI
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
             services.AddScoped<IJwtHelper, JwtHelper>();
+            services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IJwtHelper, JwtHelper>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

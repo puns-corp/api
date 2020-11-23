@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PunsApi.Requests.Authentication;
+using PunsApi.Requests.CreateRoom;
 using PunsApi.Services.ServicesResponses;
 using PunsApi.ViewModels.Authenticate;
 

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
-using PunsApi.Requests.Authentication;
+using PunsApi.Requests.CreateRoom;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
 using PunsApi.ViewModels.Authenticate;
@@ -24,7 +25,8 @@ namespace PunsApi.Services
 
 
         public AuthenticationService(AppDbContext context, PasswordHasher<Player> passwordHasher,
-            PlayerPasswordValidator passwordValidator, IJwtHelper jwtHelper) : base(context)
+            PlayerPasswordValidator passwordValidator, IJwtHelper jwtHelper, IHttpContextAccessor httpContextAccessor) 
+            : base(context, httpContextAccessor)
         {
             _passwordHasher = passwordHasher;
             _passwordValidator = passwordValidator;
