@@ -23,9 +23,7 @@ namespace PunsApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRoomRequest request)
         {
-            var playerId = User.FindFirst(ClaimTypes.Name)?.Value;
-
-            var result = await _roomService.CreateRoom(request, playerId);
+            var result = await _roomService.CreateRoom(request);
 
             if (!result.Success)
                 return BadRequest(result);
