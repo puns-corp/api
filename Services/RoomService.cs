@@ -4,8 +4,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.EntityFrameworkCore;
 using PunsApi.Data;
 using PunsApi.Helpers;
@@ -23,21 +25,21 @@ namespace PunsApi.Services
     public class RoomService : BaseService, IRoomService
     {
 
-        public RoomService(AppDbContext context) : base(context)
+        public RoomService(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 
 
-        public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request, string playerId)
+        public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request)
         {
-            var player = _context.Players.FirstOrDefault(x => x.Id.ToString() == playerId);
+            var player = await GetCurrentPlayer();
 
             if (player == null)
                 return ServiceResponse<CreateRoomViewModel>.Error("No user found");
 
             var isRoomNameValid = RoomNameValidator.IsRoomNameValid(request.RoomName);
 
-            if(!isRoomNameValid)
+            if (!isRoomNameValid)
                 return ServiceResponse<CreateRoomViewModel>.Error("Invalid email");
 
             var newRoom = new Room
@@ -56,14 +58,42 @@ namespace PunsApi.Services
             return ServiceResponse<CreateRoomViewModel>.Ok(new CreateRoomViewModel(newRoom));
         }
 
-        public Task<ServiceResponse<bool>> JoinRoom(string roomId)
+        public async Task<ServiceResponse<bool>> JoinRoom(string roomId)
         {
-            throw new NotImplementedException();
+            var player = await GetCurrentPlayer();
+
+            if (player == null)
+                return ServiceResponse<bool>.Error("No user found");
+
+            var room = await _context.Rooms.FirstOrDefaultAsync(x => x.Id.ToString() == roomId);
+
+            if (room == null)
+                return ServiceResponse<bool>.Error("No room found");
+
+            player.RoomId = room.Id;
+            _context.Update(player);
+            await _context.SaveChangesAsync();
+
+            return ServiceResponse<bool>.Ok(true, "Player joined to room");
         }
 
-        public Task<ServiceResponse<bool>> QuitRoom(string roomId)
+        public async Task<ServiceResponse<bool>> QuitRoom(string roomId)
         {
-            throw new NotImplementedException();
+            var player = await GetCurrentPlayer();
+
+            if (player == null)
+                return ServiceResponse<bool>.Error("No user found");
+
+            var room = await _context.Rooms.FirstOrDefaultAsync(x => x.Id.ToString() == roomId);
+
+            if (room == null)
+                return ServiceResponse<bool>.Error("No room found");
+
+            player.RoomId = null;
+            _context.Update(player);
+            await _context.SaveChangesAsync();
+
+            return ServiceResponse<bool>.Ok(true, "Player quit room");
         }
     }
 }
