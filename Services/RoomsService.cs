@@ -29,7 +29,6 @@ namespace PunsApi.Services
         {
         }
 
-
         public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request)
         {
             var player = await GetCurrentPlayer();
