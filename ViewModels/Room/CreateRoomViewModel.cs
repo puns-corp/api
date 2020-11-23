@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PunsApi.ViewModels.CreateRoom
+namespace PunsApi.ViewModels.Room
 {
     public class CreateRoomViewModel
     {
@@ -12,13 +12,10 @@ namespace PunsApi.ViewModels.CreateRoom
 
         public string RoomName { get; set; }
 
-        public string RoomLink { get; set; }
-
-        public CreateRoomViewModel(Room room, string roomLink)
+        public CreateRoomViewModel(Models.Room room)
         {
             Id = room.Id;
             RoomName = room.RoomName;
-            RoomLink = roomLink;
         }
     }
 }

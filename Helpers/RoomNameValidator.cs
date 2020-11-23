@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace PunsApi.Helpers
 {
-    public static class StringValidator
+    public static class RoomNameValidator
     {
-        public static bool IsRoomNameValid(string RoomName)
+        public static bool IsRoomNameValid(string roomName)
         {
-            return RoomName.Length > 2 ? true : false;
+            return roomName.Length > 2 ? true : false;
         }
     }
 }
