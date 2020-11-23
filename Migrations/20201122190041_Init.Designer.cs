@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201120203815_Init")]
+    [Migration("20201122190041_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

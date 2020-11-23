@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace PunsApi.Requests.CreateRoom
 {
-    public class AuthenticateRequest
+    public class CreateRoomRequest
     {
         [Required]
-        public string Email { get; set; }
-
+        public string RoomName { get; set; }
+        public int PlayerMinCount { get; set; }
         [Required]
-        public string Password { get; set; }
+        public int PlayerMaxCount { get; set; }
     }
 }

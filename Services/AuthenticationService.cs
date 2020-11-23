@@ -9,7 +9,7 @@ using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
-using PunsApi.Requests.Authentication;
+using PunsApi.Requests.CreateRoom;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
 using PunsApi.ViewModels.Authenticate;

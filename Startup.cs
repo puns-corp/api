@@ -96,11 +96,14 @@ namespace PunsAPI
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
             services.AddScoped<IJwtHelper, JwtHelper>();
+            services.AddScoped<ICreateRoomService, CreateRoomService>();
+            services.AddScoped<IJwtHelper, JwtHelper>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
