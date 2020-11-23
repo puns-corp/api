@@ -20,15 +20,20 @@ namespace PunsApi.Models
         [JsonIgnore]
         public string PasswordHash { get; set; }
 
+        public RefreshToken RefreshToken { get; set; }
+
         public bool IsGameMaster { get; set; } = false;
 
         public bool IsPlaying { get; set; } = false;
+
+        [ForeignKey("RoomId")]
+        public Room Room { get; set; }
+
+        public Guid? RoomId { get; set; }
 
         [ForeignKey("GameId")]
         public Game Game { get; set; }
 
         public Guid? GameId { get; set; }
-
-        public RefreshToken RefreshToken { get; set; }
     }
 }

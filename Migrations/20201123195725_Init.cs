@@ -51,6 +51,7 @@ namespace PunsApi.Migrations
                     PasswordHash = table.Column<string>(nullable: true),
                     IsGameMaster = table.Column<bool>(nullable: false),
                     IsPlaying = table.Column<bool>(nullable: false),
+                    RoomId = table.Column<Guid>(nullable: true),
                     GameId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
@@ -60,6 +61,12 @@ namespace PunsApi.Migrations
                         name: "FK_Players_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Players_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -116,6 +123,11 @@ namespace PunsApi.Migrations
                 name: "IX_Players_GameId",
                 table: "Players",
                 column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_RoomId",
+                table: "Players",
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_PlayerId",
