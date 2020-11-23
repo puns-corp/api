@@ -5,6 +5,7 @@ using PunsApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using PunsApi.Requests.Room;
 
@@ -22,7 +23,9 @@ namespace PunsApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRoomRequest request)
         {
-            var result = await _roomService.CreateRoom(request);
+            var playerId = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            var result = await _roomService.CreateRoom(request, playerId);
 
             if (!result.Success)
                 return BadRequest(result);

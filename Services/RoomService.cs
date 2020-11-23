@@ -28,8 +28,13 @@ namespace PunsApi.Services
         }
 
 
-        public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request)
+        public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request, string playerId)
         {
+            var player = _context.Players.FirstOrDefault(x => x.Id.ToString() == playerId);
+
+            if (player == null)
+                return ServiceResponse<CreateRoomViewModel>.Error("No user found");
+
             var isRoomNameValid = RoomNameValidator.IsRoomNameValid(request.RoomName);
 
             if(!isRoomNameValid)
@@ -44,6 +49,8 @@ namespace PunsApi.Services
             };
 
             await _context.Rooms.AddAsync(newRoom);
+            player.RoomId = newRoom.Id;
+            _context.Update(player);
             await _context.SaveChangesAsync();
 
             return ServiceResponse<CreateRoomViewModel>.Ok(new CreateRoomViewModel(newRoom));
