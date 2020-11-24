@@ -25,6 +25,9 @@ namespace PunsApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
