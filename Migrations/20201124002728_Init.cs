@@ -28,6 +28,7 @@ namespace PunsApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     RoomId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>

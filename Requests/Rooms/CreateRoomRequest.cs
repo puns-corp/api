@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PunsApi.Requests.Room
+namespace PunsApi.Requests.Rooms
 {
     public class CreateRoomRequest
     {

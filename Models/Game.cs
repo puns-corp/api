@@ -12,6 +12,8 @@ namespace PunsApi.Models
         [Key]
         public Guid Id { get; set; }
 
+        public string Name { get; set; }
+
         [ForeignKey("RoomId")]
         public Room Room { get; set; }
 

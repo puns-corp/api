@@ -14,21 +14,20 @@ using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
 using PunsApi.Requests.CreateRoom;
-using PunsApi.Requests.Room;
+using PunsApi.Requests.Rooms;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
 using PunsApi.ViewModels.Authenticate;
-using PunsApi.ViewModels.Room;
+using PunsApi.ViewModels.Rooms;
 
 namespace PunsApi.Services
 {
-    public class RoomService : BaseService, IRoomService
+    public class RoomsService : BaseService, IRoomsService
     {
 
-        public RoomService(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        public RoomsService(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
-
 
         public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request)
         {
@@ -37,10 +36,10 @@ namespace PunsApi.Services
             if (player == null)
                 return ServiceResponse<CreateRoomViewModel>.Error("No user found");
 
-            var isRoomNameValid = RoomNameValidator.IsRoomNameValid(request.RoomName);
+            var isRoomNameValid = NamesValidator.IsRoomNameValid(request.RoomName);
 
             if (!isRoomNameValid)
-                return ServiceResponse<CreateRoomViewModel>.Error("Invalid email");
+                return ServiceResponse<CreateRoomViewModel>.Error("Room name is too short");
 
             var newRoom = new Room
             {
@@ -90,6 +89,7 @@ namespace PunsApi.Services
                 return ServiceResponse<bool>.Error("No room found");
 
             player.RoomId = null;
+            player.GameId = null;
             _context.Update(player);
             await _context.SaveChangesAsync();
 

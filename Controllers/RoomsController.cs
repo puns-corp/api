@@ -7,23 +7,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using PunsApi.Requests.Room;
+using PunsApi.Requests.Rooms;
 
 namespace PunsApi.Controllers
 {
-    public class RoomController : BaseController
+    public class RoomsController : BaseController
     {
-        private readonly IRoomService _roomService;
+        private readonly IRoomsService _roomsService;
 
-        public RoomController(IRoomService roomService)
+        public RoomsController(IRoomsService roomsService)
         {
-            _roomService = roomService;
+            _roomsService = roomsService;
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRoomRequest request)
         {
-            var result = await _roomService.CreateRoom(request);
+            var result = await _roomsService.CreateRoom(request);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -34,7 +34,7 @@ namespace PunsApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Join(string roomId)
         {
-            var result = await _roomService.JoinRoom(roomId);
+            var result = await _roomsService.JoinRoom(roomId);
 
             if (!result.Success)
                 return BadRequest(result);
@@ -45,7 +45,7 @@ namespace PunsApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Quit(string roomId)
         {
-            var result = await _roomService.QuitRoom(roomId);
+            var result = await _roomsService.QuitRoom(roomId);
 
             if (!result.Success)
                 return BadRequest(result);

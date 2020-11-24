@@ -97,7 +97,8 @@ namespace PunsAPI
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
             services.AddScoped<IJwtHelper, JwtHelper>();
-            services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IRoomsService, RoomsService>();
+            services.AddScoped<IGamesService, GamesService>();
             services.AddScoped<IJwtHelper, JwtHelper>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
