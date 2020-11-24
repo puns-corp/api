@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PunsApi.Helpers
 {
-    public static class RoomNameValidator
+    public static class NamesValidator
     {
         public static bool IsRoomNameValid(string roomName)
         {
