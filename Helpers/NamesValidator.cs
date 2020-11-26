@@ -7,7 +7,7 @@ namespace PunsApi.Helpers
 {
     public static class NamesValidator
     {
-        public static bool IsRoomNameValid(string roomName)
+        public static bool IsNameValid(string roomName)
         {
             return roomName.Length > 2 ? true : false;
         }
