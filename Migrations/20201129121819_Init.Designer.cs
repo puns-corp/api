@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201124002728_Init")]
+    [Migration("20201129121819_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,39 @@ namespace PunsApi.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PasswordCategorieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PasswordContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PasswordCategorieId");
+
+                    b.ToTable("Passwrds");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.PasswordCategorie", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordCategories");
                 });
 
             modelBuilder.Entity("PunsApi.Models.Player", b =>
@@ -163,6 +196,13 @@ namespace PunsApi.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.HasOne("PunsApi.Models.PasswordCategorie", null)
+                        .WithMany("Passwords")
+                        .HasForeignKey("PasswordCategorieId");
                 });
 
             modelBuilder.Entity("PunsApi.Models.Player", b =>
