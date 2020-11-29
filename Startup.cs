@@ -140,6 +140,8 @@ namespace PunsAPI
             });
 
             DbPreparation.Migrate(app);
+            
+
         }
     }
 }

@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201129121819_Init")]
+    [Migration("20201129144940_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,7 @@ namespace PunsApi.Migrations
 
                     b.HasIndex("PasswordCategorieId");
 
-                    b.ToTable("Passwrds");
+                    b.ToTable("Passwords");
                 });
 
             modelBuilder.Entity("PunsApi.Models.PasswordCategorie", b =>

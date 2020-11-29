@@ -54,7 +54,7 @@ namespace PunsApi.Migrations
 
                     b.HasIndex("PasswordCategorieId");
 
-                    b.ToTable("Passwrds");
+                    b.ToTable("Passwords");
                 });
 
             modelBuilder.Entity("PunsApi.Models.PasswordCategorie", b =>

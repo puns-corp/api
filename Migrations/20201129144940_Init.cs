@@ -36,7 +36,7 @@ namespace PunsApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Passwrds",
+                name: "Passwords",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
@@ -45,9 +45,9 @@ namespace PunsApi.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Passwrds", x => x.Id);
+                    table.PrimaryKey("PK_Passwords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Passwrds_PasswordCategories_PasswordCategorieId",
+                        name: "FK_Passwords_PasswordCategories_PasswordCategorieId",
                         column: x => x.PasswordCategorieId,
                         principalTable: "PasswordCategories",
                         principalColumn: "Id",
@@ -152,8 +152,8 @@ namespace PunsApi.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Passwrds_PasswordCategorieId",
-                table: "Passwrds",
+                name: "IX_Passwords_PasswordCategorieId",
+                table: "Passwords",
                 column: "PasswordCategorieId");
 
             migrationBuilder.CreateIndex(
@@ -181,7 +181,7 @@ namespace PunsApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Passwrds");
+                name: "Passwords");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
