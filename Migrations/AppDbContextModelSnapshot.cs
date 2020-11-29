@@ -38,6 +38,39 @@ namespace PunsApi.Migrations
                     b.ToTable("Games");
                 });
 
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PasswordCategorieId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PasswordContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PasswordCategorieId");
+
+                    b.ToTable("Passwrds");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.PasswordCategorie", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordCategories");
+                });
+
             modelBuilder.Entity("PunsApi.Models.Player", b =>
                 {
                     b.Property<Guid>("Id")
@@ -161,6 +194,13 @@ namespace PunsApi.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.HasOne("PunsApi.Models.PasswordCategorie", null)
+                        .WithMany("Passwords")
+                        .HasForeignKey("PasswordCategorieId");
                 });
 
             modelBuilder.Entity("PunsApi.Models.Player", b =>
