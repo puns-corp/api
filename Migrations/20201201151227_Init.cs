@@ -36,22 +36,22 @@ namespace PunsApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Passwrds",
+                name: "Passwords",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    PasswordContent = table.Column<string>(nullable: true),
-                    PasswordCategorieId = table.Column<Guid>(nullable: true)
+                    PasswordCategoryId = table.Column<Guid>(nullable: false),
+                    Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Passwrds", x => x.Id);
+                    table.PrimaryKey("PK_Passwords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Passwrds_PasswordCategories_PasswordCategorieId",
-                        column: x => x.PasswordCategorieId,
+                        name: "FK_Passwords_PasswordCategories_PasswordCategoryId",
+                        column: x => x.PasswordCategoryId,
                         principalTable: "PasswordCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,9 +152,9 @@ namespace PunsApi.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Passwrds_PasswordCategorieId",
-                table: "Passwrds",
-                column: "PasswordCategorieId");
+                name: "IX_Passwords_PasswordCategoryId",
+                table: "Passwords",
+                column: "PasswordCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_GameId",
@@ -181,7 +181,7 @@ namespace PunsApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Passwrds");
+                name: "Passwords");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
