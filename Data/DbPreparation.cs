@@ -25,104 +25,103 @@ namespace PunsApi.Data
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Failed to seed database.");
                 Console.WriteLine(ex.Message);
             }
         }
         public static void SeedData(AppDbContext context)
         {
+            if (context.PasswordCategories.Any())
+                return;
 
-            //Populating Database
-            if (!context.PasswordCategories.Any())
+            Console.WriteLine("Adding password categories...");
+            var categories = new List<PasswordCategory>
             {
-                System.Console.WriteLine("Adding Users...");
-                var item = new List<PasswordCategorie>
+                new PasswordCategory
                 {
-                    new PasswordCategorie
+                    CategoryName = "Film Polski",
+                    Passwords = new List<Password>
                     {
-                        CategoryName = "Film Polski",
-                        Passwords = new List<Password>
+                        new Password
                         {
-                            new Password
-                            {
-                                PasswordContent = "Sami Swoi"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Boże Ciało"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "365 Dni"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Poranek Kojota"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Chłopaki Nie Płaczą"
-                            }
+                            Content = "Sami Swoi"
+                        },
+                        new Password
+                        {
+                            Content = "Boże Ciało"
+                        },
+                        new Password
+                        {
+                            Content = "365 Dni"
+                        },
+                        new Password
+                        {
+                            Content = "Poranek Kojota"
+                        },
+                        new Password
+                        {
+                            Content = "Chłopaki Nie Płaczą"
                         }
-                    },
-                    new PasswordCategorie
+                    }
+                },
+                new PasswordCategory
+                {
+                    CategoryName = "Film Zagraniczny",
+                    Passwords = new List<Password>
                     {
-                        CategoryName = "Film Zagraniczny",
-                        Passwords = new List<Password>
+                        new Password
                         {
-                            new Password
-                            {
-                                PasswordContent = "Zniewolony"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Matrix"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Uwolnić Orkę"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Terminator"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Rocky"
-                            }
+                            Content = "Zniewolony"
+                        },
+                        new Password
+                        {
+                            Content = "Matrix"
+                        },
+                        new Password
+                        {
+                            Content = "Uwolnić Orkę"
+                        },
+                        new Password
+                        {
+                            Content = "Terminator"
+                        },
+                        new Password
+                        {
+                            Content = "Rocky"
                         }
-                    },
-                    new PasswordCategorie
+                    }
+                },
+                new PasswordCategory
+                {
+                    CategoryName = "Przysłowia",
+                    Passwords = new List<Password>
                     {
-                        CategoryName = "Przysłowia",
-                        Passwords = new List<Password>
+                        new Password
                         {
-                            new Password
-                            {
-                                PasswordContent = "Bez pracy nie ma kołaczy"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Darowanemu koniowi w zęby się nie zagląda"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Fortuna kołem się toczy"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Lepszy wróbel w garści niż gołąb na dachu"
-                            },
-                            new Password
-                            {
-                                PasswordContent = "Co ma wisieć, nie utonie"
-                            }
+                            Content = "Bez pracy nie ma kołaczy"
+                        },
+                        new Password
+                        {
+                            Content = "Darowanemu koniowi w zęby się nie zagląda"
+                        },
+                        new Password
+                        {
+                            Content = "Fortuna kołem się toczy"
+                        },
+                        new Password
+                        {
+                            Content = "Lepszy wróbel w garści niż gołąb na dachu"
+                        },
+                        new Password
+                        {
+                            Content = "Co ma wisieć, nie utonie"
                         }
-                    },
+                    }
+                },
 
-                };
-                context.AddRange(item);
-                context.SaveChanges();
-            }
+            };
+            context.AddRange(categories);
+            context.SaveChanges();
         }
     }
 }

@@ -10,11 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<< HEAD:Migrations/20201129144940_Init.Designer.cs
-    [Migration("20201129144940_Init")]
-=======
-    [Migration("20201201151227_Init")]
->>>>>>> PUNS-22:Migrations/20201201151227_Init.Designer.cs
+    [Migration("20201201154055_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
