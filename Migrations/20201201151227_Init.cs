@@ -40,18 +40,23 @@ namespace PunsApi.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    PasswordContent = table.Column<string>(nullable: true),
-                    PasswordCategorieId = table.Column<Guid>(nullable: true)
+                    PasswordCategoryId = table.Column<Guid>(nullable: false),
+                    Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Passwords", x => x.Id);
                     table.ForeignKey(
+<<<<<<< HEAD:Migrations/20201129144940_Init.cs
                         name: "FK_Passwords_PasswordCategories_PasswordCategorieId",
                         column: x => x.PasswordCategorieId,
+=======
+                        name: "FK_Passwords_PasswordCategories_PasswordCategoryId",
+                        column: x => x.PasswordCategoryId,
+>>>>>>> PUNS-22:Migrations/20201201151227_Init.cs
                         principalTable: "PasswordCategories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,9 +157,15 @@ namespace PunsApi.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
+<<<<<<< HEAD:Migrations/20201129144940_Init.cs
                 name: "IX_Passwords_PasswordCategorieId",
                 table: "Passwords",
                 column: "PasswordCategorieId");
+=======
+                name: "IX_Passwords_PasswordCategoryId",
+                table: "Passwords",
+                column: "PasswordCategoryId");
+>>>>>>> PUNS-22:Migrations/20201201151227_Init.cs
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_GameId",
