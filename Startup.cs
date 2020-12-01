@@ -22,6 +22,7 @@ using NSwag.Generation.Processors.Security;
 using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
+using PunsApi.Hubs;
 using PunsApi.Models;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services;
@@ -93,6 +94,8 @@ namespace PunsAPI
                 }));
             });
 
+            services.AddSignalR();
+
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
@@ -112,6 +115,15 @@ namespace PunsAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Enable CORS so the Vue client can send requests
+            app.UseCors(builder =>
+                builder
+                    .WithOrigins("http://localhost:8080")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+            );
 
             app.UseOpenApi(options =>
             {
@@ -137,6 +149,7 @@ namespace PunsAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/gameHub");
             });
 
             DbPreparation.Migrate(app);
