@@ -10,7 +10,11 @@ namespace PunsApi.Services.Interfaces
     public interface IGamesService
     {
         Task<ServiceResponse<bool>> CreateGame(CreateGameRequest request);
+
         Task<ServiceResponse<bool>> JoinGame(string gameId);
+
         Task<ServiceResponse<bool>> QuitGame(string gameId);
+
+        Task<ServiceResponse<bool>> StartGame(string gameId);
     }
 }
