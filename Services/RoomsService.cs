@@ -31,7 +31,7 @@ namespace PunsApi.Services
 
         public async Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request)
         {
-            var player = await GetCurrentPlayer();
+            var player = await GetPlayer();
 
             if (player == null)
                 return ServiceResponse<CreateRoomViewModel>.Error("No user found");
@@ -59,7 +59,7 @@ namespace PunsApi.Services
 
         public async Task<ServiceResponse<bool>> JoinRoom(string roomId)
         {
-            var player = await GetCurrentPlayer();
+            var player = await GetPlayer();
 
             if (player == null)
                 return ServiceResponse<bool>.Error("No user found");
@@ -78,7 +78,7 @@ namespace PunsApi.Services
 
         public async Task<ServiceResponse<bool>> QuitRoom(string roomId)
         {
-            var player = await GetCurrentPlayer();
+            var player = await GetPlayer();
 
             if (player == null)
                 return ServiceResponse<bool>.Error("No user found");
