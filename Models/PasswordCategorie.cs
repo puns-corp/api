@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace PunsApi.Models
 {
-    public class PasswordCategorie
+    public class PasswordCategory
     {
         [Key]
         public Guid Id { get; set; }
+
         public string CategoryName { get; set; }
+
         public ICollection<Password> Passwords { get; set; }
     }
 }

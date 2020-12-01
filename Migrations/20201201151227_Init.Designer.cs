@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201129121819_Init")]
+    [Migration("20201201151227_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,20 +46,20 @@ namespace PunsApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("PasswordCategorieId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("PasswordContent")
+                    b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PasswordCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PasswordCategorieId");
+                    b.HasIndex("PasswordCategoryId");
 
-                    b.ToTable("Passwrds");
+                    b.ToTable("Passwords");
                 });
 
-            modelBuilder.Entity("PunsApi.Models.PasswordCategorie", b =>
+            modelBuilder.Entity("PunsApi.Models.PasswordCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -200,9 +200,11 @@ namespace PunsApi.Migrations
 
             modelBuilder.Entity("PunsApi.Models.Password", b =>
                 {
-                    b.HasOne("PunsApi.Models.PasswordCategorie", null)
+                    b.HasOne("PunsApi.Models.PasswordCategory", "PasswordCategory")
                         .WithMany("Passwords")
-                        .HasForeignKey("PasswordCategorieId");
+                        .HasForeignKey("PasswordCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PunsApi.Models.Player", b =>
