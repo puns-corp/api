@@ -52,6 +52,15 @@ namespace PunsAPI
             services.AddDbContext<AppDbContext>(
                 x => x.UseSqlServer(connectionString));
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("corsPolicy",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    });
+            });
+
             services.AddControllers();
 
             // configure strongly typed settings objects
@@ -113,6 +122,12 @@ namespace PunsAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseCors("corsPolicy");
+
             app.UseOpenApi(options =>
             {
                 options.DocumentName = "swagger";
@@ -122,10 +137,6 @@ namespace PunsAPI
                     document.Schemes.Add(OpenApiSchema.Https);
                 };
             });
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
 
             app.UseSwaggerUi3(options =>
             {
