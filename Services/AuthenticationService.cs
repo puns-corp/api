@@ -10,7 +10,7 @@ using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
-using PunsApi.Requests.CreateRoom;
+using PunsApi.Requests.Authentication;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
 using PunsApi.ViewModels.Authenticate;
@@ -33,7 +33,7 @@ namespace PunsApi.Services
             _jwtHelper = jwtHelper;
         }
 
-        public async Task<ServiceResponse<bool>> Register(AuthenticateRequest request)
+        public async Task<ServiceResponse<bool>> Register(RegisterRequest request)
         {
             var isEmailValid = EmailValidator.IsEmailValid(request.Email);
 
@@ -58,15 +58,17 @@ namespace PunsApi.Services
             {
                 Email = request.Email,
                 PasswordHash = hashedPassword,
+                Nick = request.Nick
+                
             };
 
             await _context.Players.AddAsync(newPlayer);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<bool>.Ok(true, "User created");
+            return ServiceResponse<bool>.Ok(true, "Player created");
         }
 
-        public async Task<ServiceResponse<AuthenticateViewModel>> Login(AuthenticateRequest request)
+        public async Task<ServiceResponse<AuthenticateViewModel>> Login(LoginRequest request)
         {
             var player = await _context.Players.Include(
                 x => x.RefreshToken).FirstOrDefaultAsync(

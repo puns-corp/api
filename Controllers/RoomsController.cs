@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PunsApi.Requests.CreateRoom;
 using PunsApi.Services.Interfaces;
 using System;
 using System.Collections.Generic;
