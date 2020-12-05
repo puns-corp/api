@@ -4,10 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PunsApi.Requests.CreateRoom
+namespace PunsApi.Requests.Authentication
 {
-    public class AuthenticateRequest
+    public class RegisterRequest
     {
+        [Required]
+        public string Nick { get; set; }
+
         [Required]
         public string Email { get; set; }
 
