@@ -14,6 +14,11 @@ namespace PunsApi.ViewModels.Games
 
         public List<Player> Players { get; set; }
 
+        public JoinGameViewModel()
+        {
+
+        }
+
         public JoinGameViewModel(string gameId, string gameMasterId, List<Player> players)
         {
             GameId = gameId;

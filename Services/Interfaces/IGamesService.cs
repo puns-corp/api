@@ -13,5 +13,7 @@ namespace PunsApi.Services.Interfaces
         Task<ServiceResponse<bool>> CreateGame(CreateGameRequest request);
         Task<ServiceResponse<JoinGameViewModel>> JoinGame(string gameId);
         Task<ServiceResponse<bool>> QuitGame(string gameId);
+
+        Task<ServiceResponse<bool>> StartGame(string gameId);
     }
 }

@@ -21,7 +21,7 @@ namespace PunsApi.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<Player> GetCurrentPlayer()
+        public async Task<Player> GetPlayer()
         {
             var playerId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             return await _context.Players.FirstOrDefaultAsync(x => x.Id.ToString() == playerId);

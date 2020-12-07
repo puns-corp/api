@@ -22,6 +22,7 @@ using NSwag.Generation.Processors.Security;
 using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
+using PunsApi.Hubs;
 using PunsApi.Models;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services;
@@ -102,6 +103,8 @@ namespace PunsAPI
                 }));
             });
 
+            services.AddSignalR();
+
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<PasswordHasher<Player>>();
             services.AddScoped<PlayerPasswordValidator>();
@@ -148,11 +151,10 @@ namespace PunsAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<GameHub>("/gameHub");
             });
 
             DbPreparation.Migrate(app);
-            
-
-        }
+         }
     }
 }

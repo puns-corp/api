@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PunsApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 

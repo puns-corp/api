@@ -52,6 +52,17 @@ namespace PunsApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> StartGame(string gameId)
+        {
+            var result = await _gamesService.StartGame(gameId);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 
 
