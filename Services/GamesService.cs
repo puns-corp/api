@@ -11,6 +11,7 @@ using PunsApi.Requests.Games;
 using PunsApi.Requests.Rooms;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
+using PunsApi.ViewModels.Games;
 using PunsApi.ViewModels.Rooms;
 
 namespace PunsApi.Services
@@ -33,7 +34,7 @@ namespace PunsApi.Services
             if(room == null)
                 return ServiceResponse<bool>.Error("No room found");
 
-            var isRoomNameValid = NamesValidator.IsRoomNameValid(request.GameName);
+            var isRoomNameValid = NamesValidator.IsNameValid(request.GameName);
 
             if (!isRoomNameValid)
                 return ServiceResponse<bool>.Error("Game name is too short");
@@ -42,7 +43,8 @@ namespace PunsApi.Services
             {
                 Id = Guid.NewGuid(),
                 Name = request.GameName,
-                RoomId = room.Id
+                RoomId = room.Id,
+                GameMasterId = player.Id
             };
 
             await _context.Games.AddAsync(newGame);
@@ -54,31 +56,34 @@ namespace PunsApi.Services
             return ServiceResponse<bool>.Ok(true, "Game created");
         }
 
-        public async Task<ServiceResponse<bool>> JoinGame(string gameId)
+        public async Task<ServiceResponse<JoinGameViewModel>> JoinGame(string gameId)
         {
             var player = await GetCurrentPlayer();
 
             if (player == null)
-                return ServiceResponse<bool>.Error("No player found");
+                return ServiceResponse<JoinGameViewModel>.Error("No player found");
 
-            var game = await _context.Games.FirstOrDefaultAsync(x => x.Id.ToString() == gameId);
+            var game = await _context.Games
+                .Include(x => x.Players)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == gameId);
 
             if(game == null)
-                return ServiceResponse<bool>.Error("No game found");
+                return ServiceResponse<JoinGameViewModel>.Error("No game found");
 
             var room = await _context.Rooms.FirstOrDefaultAsync(x => x.Id == player.RoomId);
 
             if (room == null)
-                return ServiceResponse<bool>.Error("No room found");
+                return ServiceResponse<JoinGameViewModel>.Error("No room found");
 
             if(room.Id != game.RoomId)
-                return ServiceResponse<bool>.Error("User isn't in this room");
+                return ServiceResponse<JoinGameViewModel>.Error("User isn't in this room");
 
             player.GameId = game.Id;
             _context.Update(player);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<bool>.Ok(true, "Player joined to game");
+            return ServiceResponse<JoinGameViewModel>.Ok(new JoinGameViewModel(
+                game.Id.ToString(), game.GameMasterId.ToString(), game.Players.ToList()));
         }
 
         public async Task<ServiceResponse<bool>> QuitGame(string gameId)

@@ -35,7 +35,7 @@ namespace PunsApi.Services
             if (player == null)
                 return ServiceResponse<CreateRoomViewModel>.Error("No user found");
 
-            var isRoomNameValid = NamesValidator.IsRoomNameValid(request.RoomName);
+            var isRoomNameValid = NamesValidator.IsNameValid(request.RoomName);
 
             if (!isRoomNameValid)
                 return ServiceResponse<CreateRoomViewModel>.Error("Room name is too short");

@@ -19,6 +19,16 @@ namespace PunsApi.Models
 
         public Guid RoomId { get; set; }
 
+        [ForeignKey("GameMasterId")]
+        public Player GameMaster { get; set; }
+
+        public Guid GameMasterId { get; set; }
+
+        [ForeignKey("CurrentPlayerId")]
+        public Player CurrentPlayer { get; set; }
+
+        public Guid CurrentPlayerId { get; set; }
+
         public ICollection<Player> Players { get; set; } 
 
     }
