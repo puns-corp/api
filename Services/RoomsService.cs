@@ -13,7 +13,6 @@ using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
-using PunsApi.Requests.CreateRoom;
 using PunsApi.Requests.Rooms;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;

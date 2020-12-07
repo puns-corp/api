@@ -14,6 +14,7 @@ using PunsApi.Requests.Games;
 using PunsApi.Requests.Rooms;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services.ServicesResponses;
+using PunsApi.ViewModels.Games;
 using PunsApi.ViewModels.Rooms;
 
 namespace PunsApi.Services
@@ -48,7 +49,8 @@ namespace PunsApi.Services
             {
                 Id = Guid.NewGuid(),
                 Name = request.GameName,
-                RoomId = room.Id
+                RoomId = room.Id,
+                GameMasterId = player.Id
             };
 
             await _context.Games.AddAsync(newGame);
@@ -61,20 +63,22 @@ namespace PunsApi.Services
             return ServiceResponse<bool>.Ok(true, "Game created");
         }
 
-        public async Task<ServiceResponse<bool>> JoinGame(string gameId)
+        public async Task<ServiceResponse<JoinGameViewModel>> JoinGame(string gameId)
         {
-            var (response, player) = await ValidateRequest(gameId, true);
+            var (response, player) = await ValidateRequest<JoinGameViewModel>(
+                gameId, new JoinGameViewModel());
 
             if (!response.Success)
                 return response;
 
-            player.GameId = player.Game.Id;
-            _context.Update(player);
-            await _context.SaveChangesAsync();
+            var game = await _context.Games
+                .Include(x => x.Players)
+                .FirstOrDefaultAsync(x => x.Id.ToString() == gameId);
 
             await _gameHubContext.Clients.Group(gameId).PlayerJoined(player.Nick);
 
-            return ServiceResponse<bool>.Ok(true, "Player joined to game");
+            return ServiceResponse<JoinGameViewModel>.Ok(new JoinGameViewModel(
+                gameId, game.GameMasterId.ToString(), game.Players.ToList()));
         }
 
         public async Task<ServiceResponse<bool>> QuitGame(string gameId)

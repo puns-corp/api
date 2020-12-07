@@ -16,5 +16,9 @@ namespace PunsApi.Data
         public DbSet<Result> Results{ get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        public DbSet<Password> Passwords { get; set; }
+
+        public DbSet<PasswordCategory> PasswordCategories { get; set; }
     }
 }

@@ -8,6 +8,18 @@ namespace PunsApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "PasswordCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CategoryName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PasswordCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -21,6 +33,25 @@ namespace PunsApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rooms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Passwords",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    PasswordCategoryId = table.Column<Guid>(nullable: false),
+                    Content = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Passwords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Passwords_PasswordCategories_PasswordCategoryId",
+                        column: x => x.PasswordCategoryId,
+                        principalTable: "PasswordCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,6 +152,11 @@ namespace PunsApi.Migrations
                 column: "RoomId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Passwords_PasswordCategoryId",
+                table: "Passwords",
+                column: "PasswordCategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Players_GameId",
                 table: "Players",
                 column: "GameId");
@@ -145,10 +181,16 @@ namespace PunsApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Passwords");
+
+            migrationBuilder.DropTable(
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Results");
+
+            migrationBuilder.DropTable(
+                name: "PasswordCategories");
 
             migrationBuilder.DropTable(
                 name: "Players");

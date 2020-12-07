@@ -10,7 +10,7 @@ using PunsApi.Data;
 namespace PunsApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201124002728_Init")]
+    [Migration("20201201154055_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,39 @@ namespace PunsApi.Migrations
                     b.HasIndex("RoomId");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PasswordCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PasswordCategoryId");
+
+                    b.ToTable("Passwords");
+                });
+
+            modelBuilder.Entity("PunsApi.Models.PasswordCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PasswordCategories");
                 });
 
             modelBuilder.Entity("PunsApi.Models.Player", b =>
@@ -161,6 +194,15 @@ namespace PunsApi.Migrations
                     b.HasOne("PunsApi.Models.Room", "Room")
                         .WithMany("Games")
                         .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PunsApi.Models.Password", b =>
+                {
+                    b.HasOne("PunsApi.Models.PasswordCategory", "PasswordCategory")
+                        .WithMany("Passwords")
+                        .HasForeignKey("PasswordCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

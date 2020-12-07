@@ -16,12 +16,19 @@ namespace PunsApi.ViewModels.Authenticate
 
         public string RefreshToken { get; set; }
 
+        public string GameId { get; set; }
+
+        public string RoomId { get; set; }
+
         public AuthenticateViewModel(Player player, string jwtToken, string refreshToken)
         {
             Id = player.Id;
             Nick = player.Nick;
             AccessToken = jwtToken;
             RefreshToken = refreshToken;
+            RoomId = player.RoomId.ToString();
+            GameId = player.GameId.ToString();
+
         }
     }
 }

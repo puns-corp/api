@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PunsApi.Requests.CreateRoom;
+using PunsApi.Requests.Authentication;
 using PunsApi.Services.Interfaces;
 
 namespace PunsApi.Controllers
@@ -20,7 +20,7 @@ namespace PunsApi.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] AuthenticateRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var result = await _authenticationService.Register(request);
 
@@ -32,7 +32,7 @@ namespace PunsApi.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] AuthenticateRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var result = await _authenticationService.Login(request);
 
