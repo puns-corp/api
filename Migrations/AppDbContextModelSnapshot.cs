@@ -25,10 +25,22 @@ namespace PunsApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("GameEnded")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("GameMasterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("GameStarted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("RoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ShowingPlayerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -83,11 +95,14 @@ namespace PunsApi.Migrations
                     b.Property<Guid?>("GameId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("GameWhereCurrentlyShowingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsGameMaster")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsPlaying")
-                        .HasColumnType("bit");
+                    b.Property<Guid?>("MasteredGameId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nick")
                         .HasColumnType("nvarchar(max)");
@@ -98,9 +113,20 @@ namespace PunsApi.Migrations
                     b.Property<Guid?>("RoomId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("GameWhereCurrentlyShowingId")
+                        .IsUnique()
+                        .HasFilter("[GameWhereCurrentlyShowingId] IS NOT NULL");
+
+                    b.HasIndex("MasteredGameId")
+                        .IsUnique()
+                        .HasFilter("[MasteredGameId] IS NOT NULL");
 
                     b.HasIndex("RoomId");
 
@@ -210,6 +236,14 @@ namespace PunsApi.Migrations
                     b.HasOne("PunsApi.Models.Game", "Game")
                         .WithMany("Players")
                         .HasForeignKey("GameId");
+
+                    b.HasOne("PunsApi.Models.Game", "GameWhereCurrentlyShowing")
+                        .WithOne("ShowingPlayer")
+                        .HasForeignKey("PunsApi.Models.Player", "GameWhereCurrentlyShowingId");
+
+                    b.HasOne("PunsApi.Models.Game", "MasteredGame")
+                        .WithOne("GameMaster")
+                        .HasForeignKey("PunsApi.Models.Player", "MasteredGameId");
 
                     b.HasOne("PunsApi.Models.Room", "Room")
                         .WithMany()

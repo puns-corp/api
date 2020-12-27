@@ -24,8 +24,6 @@ namespace PunsApi.Models
 
         public bool IsGameMaster { get; set; } = false;
 
-        public bool IsPlaying { get; set; } = false;
-
         [ForeignKey("RoomId")]
         public Room Room { get; set; }
 
@@ -35,5 +33,17 @@ namespace PunsApi.Models
         public Game Game { get; set; }
 
         public Guid? GameId { get; set; }
+
+        public int Score { get; set; } = 0;
+
+        [ForeignKey("MasteredGameId")]
+        public Game MasteredGame { get; set; }
+
+        public Guid? MasteredGameId { get; set; }
+
+        [ForeignKey("GameWhereCurrentlyShowingId")]
+        public Game GameWhereCurrentlyShowing { get; set; }
+
+        public Guid? GameWhereCurrentlyShowingId { get; set; }
     }
 }

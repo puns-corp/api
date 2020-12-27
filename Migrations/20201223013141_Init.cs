@@ -60,7 +60,11 @@ namespace PunsApi.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    RoomId = table.Column<Guid>(nullable: false)
+                    RoomId = table.Column<Guid>(nullable: false),
+                    GameMasterId = table.Column<Guid>(nullable: false),
+                    ShowingPlayerId = table.Column<Guid>(nullable: true),
+                    GameStarted = table.Column<bool>(nullable: false),
+                    GameEnded = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,9 +86,11 @@ namespace PunsApi.Migrations
                     Nick = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     IsGameMaster = table.Column<bool>(nullable: false),
-                    IsPlaying = table.Column<bool>(nullable: false),
                     RoomId = table.Column<Guid>(nullable: true),
-                    GameId = table.Column<Guid>(nullable: true)
+                    GameId = table.Column<Guid>(nullable: true),
+                    Score = table.Column<int>(nullable: false),
+                    MasteredGameId = table.Column<Guid>(nullable: true),
+                    GameWhereCurrentlyShowingId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,6 +98,18 @@ namespace PunsApi.Migrations
                     table.ForeignKey(
                         name: "FK_Players_Games_GameId",
                         column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Players_Games_GameWhereCurrentlyShowingId",
+                        column: x => x.GameWhereCurrentlyShowingId,
+                        principalTable: "Games",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Players_Games_MasteredGameId",
+                        column: x => x.MasteredGameId,
                         principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -160,6 +178,20 @@ namespace PunsApi.Migrations
                 name: "IX_Players_GameId",
                 table: "Players",
                 column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_GameWhereCurrentlyShowingId",
+                table: "Players",
+                column: "GameWhereCurrentlyShowingId",
+                unique: true,
+                filter: "[GameWhereCurrentlyShowingId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_MasteredGameId",
+                table: "Players",
+                column: "MasteredGameId",
+                unique: true,
+                filter: "[MasteredGameId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_RoomId",
