@@ -30,7 +30,7 @@ namespace PunsApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("{roomId}")]
         public async Task<IActionResult> Join(string roomId)
         {
             var result = await _roomsService.JoinRoom(roomId);
@@ -42,9 +42,20 @@ namespace PunsApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Quit(string roomId)
+        public async Task<IActionResult> FetchGames()
         {
-            var result = await _roomsService.QuitRoom(roomId);
+            var result = await _roomsService.FetchGames();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FetchRooms()
+        {
+            var result = await _roomsService.FetchRooms();
 
             if (!result.Success)
                 return BadRequest(result);
