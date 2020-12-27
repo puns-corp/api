@@ -23,6 +23,7 @@ using PunsApi.Data;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Hubs;
+using PunsApi.Middlewares;
 using PunsApi.Models;
 using PunsApi.Services.Interfaces;
 using PunsApi.Services;
@@ -50,25 +51,28 @@ namespace PunsAPI
             var connectionString =
                 $"Server={server},{port};Database={database};User={user};Password={password}";
 
+            bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+            if (isDevelopment)
+            {
+                connectionString = Configuration.GetConnectionString("SQLExpress");
+
+            }
+            //var connectionString = Configuration.GetConnectionString("SQLExpress");
+
             services.AddDbContext<AppDbContext>(
                 x => x.UseSqlServer(connectionString));
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("corsPolicy",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                    });
-            });
+            services.AddCors();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            ); ;
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
-            // configure jwt authentication
+            //configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
@@ -119,17 +123,25 @@ namespace PunsAPI
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-         {
+        {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            app.UseMiddleware<WebSocketMiddleware>();
 
+            app.UseCors(builder =>
+                builder
+                    .WithOrigins("http://localhost:8080")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+            );
             app.UseRouting();
 
-            app.UseCors("corsPolicy");
+
 
             app.UseOpenApi(options =>
             {
@@ -154,7 +166,9 @@ namespace PunsAPI
                 endpoints.MapHub<GameHub>("/gameHub");
             });
 
+            app.UseHttpsRedirection();
+
             DbPreparation.Migrate(app);
-         }
+        }
     }
 }
