@@ -8,27 +8,15 @@ namespace PunsApi.ViewModels.Authenticate
 {
     public class AuthenticateViewModel
     {
-        public Guid Id { get; set; }
-
-        public string Nick { get; set; }
-
         public string AccessToken { get; set; }
 
         public string RefreshToken { get; set; }
 
-        public string GameId { get; set; }
 
-        public string RoomId { get; set; }
-
-        public AuthenticateViewModel(Player player, string jwtToken, string refreshToken)
+        public AuthenticateViewModel(string accessToken, string refreshToken)
         {
-            Id = player.Id;
-            Nick = player.Nick;
-            AccessToken = jwtToken;
+            AccessToken = accessToken;
             RefreshToken = refreshToken;
-            RoomId = player.RoomId.ToString();
-            GameId = player.GameId.ToString();
-
         }
     }
 }
