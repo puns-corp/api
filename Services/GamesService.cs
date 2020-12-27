@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
@@ -47,7 +48,6 @@ namespace PunsApi.Services
 
             var newGame = new Game
             {
-                Id = Guid.NewGuid(),
                 Name = request.GameName,
                 RoomId = room.Id,
                 GameMasterId = player.Id
@@ -63,25 +63,38 @@ namespace PunsApi.Services
             return ServiceResponse<bool>.Ok(true, "Game created");
         }
 
-        public async Task<ServiceResponse<JoinGameViewModel>> JoinGame(string gameId)
+        public async Task<ServiceResponse<FetchGameViewModel>> FetchGame()
         {
-            var (response, player) = await ValidateRequest<JoinGameViewModel>(
-                gameId, new JoinGameViewModel());
+            var player = await GetPlayer();
+
+            var game = await _context.Games.Include(x => x.Players).FirstOrDefaultAsync(
+                x => x.Id == player.GameId);
+
+            if (game == null)
+                return ServiceResponse<FetchGameViewModel>.Error("No game found");
+
+            return ServiceResponse<FetchGameViewModel>.Ok(new FetchGameViewModel(game));
+        }
+
+
+        public async Task<ServiceResponse<bool>> JoinGame(string gameId, string connectionId)
+        {
+            var (response, player) = await ValidateRequest<bool>(
+                gameId, true);
 
             if (!response.Success)
                 return response;
 
-            var game = await _context.Games
-                .Include(x => x.Players)
-                .FirstOrDefaultAsync(x => x.Id.ToString() == gameId);
+            _context.Players.Update(player);
+            await _context.SaveChangesAsync();
 
-            await _gameHubContext.Clients.Group(gameId).PlayerJoined(player.Nick);
+            await _gameHubContext.Groups.AddToGroupAsync(connectionId, gameId);
+            await _gameHubContext.Clients.Group(gameId).PlayerJoined(player.Id.ToString());
 
-            return ServiceResponse<JoinGameViewModel>.Ok(new JoinGameViewModel(
-                gameId, game.GameMasterId.ToString(), game.Players.ToList()));
+            return ServiceResponse<bool>.Ok(true, "Player joined to game");
         }
 
-        public async Task<ServiceResponse<bool>> QuitGame(string gameId)
+        public async Task<ServiceResponse<bool>> QuitGame(string gameId, string connectionId)
         {
             var (response, player) = await ValidateRequest(gameId, true);
 
@@ -95,12 +108,14 @@ namespace PunsApi.Services
             _context.Update(player);
             await _context.SaveChangesAsync();
 
-            await _gameHubContext.Clients.Group(gameId).PlayerQuit(player.Nick);
+            await _gameHubContext.Groups.RemoveFromGroupAsync(connectionId, gameId);
+            await _gameHubContext.Clients.Group(gameId).PlayerQuit(player.Id.ToString());
 
             return ServiceResponse<bool>.Ok(true, "Player quit game");
         }
 
-        public async Task<ServiceResponse<bool>> StartGame(string gameId)
+
+        public async Task<ServiceResponse<bool>> GameStart(string gameId)
         {
             var (response, player) = await ValidateRequest(gameId, true);
 
@@ -110,9 +125,97 @@ namespace PunsApi.Services
             if (!player.IsGameMaster)
                 return ServiceResponse<bool>.Error("Player isn't game master");
 
+            var game = _context.Games.FirstOrDefault(x => x.Id == player.GameId);
+
+            if (game == null)
+                return ServiceResponse<bool>.Error("No game found");
+
+            game.GameStarted = true;
+            game.GameEnded = false;
+            _context.Games.Update(game);
+            await _context.SaveChangesAsync();
+
             await _gameHubContext.Clients.Group(gameId).GameStarted();
 
             return ServiceResponse<bool>.Ok(true, "Game started");
+        }
+
+        public async Task<ServiceResponse<bool>> GameEnd(string gameId)
+        {
+            var (response, player) = await ValidateRequest(gameId, true);
+
+            if (!response.Success)
+                return response;
+
+            if (!player.IsGameMaster)
+                return ServiceResponse<bool>.Error("Player isn't game master");
+
+            var game = _context.Games.FirstOrDefault(x => x.Id == player.GameId);
+
+            if (game == null)
+                return ServiceResponse<bool>.Error("No game found");
+
+            game.GameStarted = false;
+            game.GameEnded = true;
+            _context.Games.Update(game);
+            player.Score = 0;
+            _context.Players.Update(player);
+            await _context.SaveChangesAsync();
+
+            await _gameHubContext.Clients.Group(gameId).GameEnded();
+
+            return ServiceResponse<bool>.Ok(true, "Game ended");
+        }
+
+        public async Task<ServiceResponse<FetchPasswordsViewModel>> FetchPasswords()
+        {
+            var passwordCategories = await _context.PasswordCategories.Include(
+                x => x.Passwords).ToListAsync();
+
+            return ServiceResponse<FetchPasswordsViewModel>.Ok(new FetchPasswordsViewModel(passwordCategories));
+
+        }
+
+        public async Task<ServiceResponse<bool>> PlayerScored(string nextPlayerId)
+        {
+            var player = _context.Players.FirstOrDefault(x => x.Id.ToString() == nextPlayerId);
+
+            if (player == null)
+                return ServiceResponse<bool>.Error("No player found");
+
+            var game = await _context.Games.FirstOrDefaultAsync(
+                x => x.Id == player.GameId);
+
+            player.Score++;
+            _context.Players.Update(player);
+            game.ShowingPlayerId = player.Id;
+            _context.Games.Update(game);
+            await _context.SaveChangesAsync();
+
+            return ServiceResponse<bool>.Ok(true,"Player scored and switched");
+
+        }
+
+        //public async Task<ServiceResponse<bool>> SwitchPlayer(string gameId, string playerId)
+        //{
+        //    var player = await GetPlayer();
+
+        //    var game = await _context.Games.FirstOrDefaultAsync(x => x.Id == player.GameId);
+
+        //    game.ShowingPlayerId = player.Id;
+        //    _context.Games.Update(game);
+        //    await _context.SaveChangesAsync();
+
+        //    return ServiceResponse<bool>.Ok(true, "Player switched");
+        //}
+
+        public async Task<ServiceResponse<FetchPlayersViewModel>> FetchPlayers()
+        {
+            var player = await GetPlayer();
+
+            var players = await _context.Players.Where(x => x.GameId == player.GameId).ToListAsync();
+
+            return ServiceResponse<FetchPlayersViewModel>.Ok(new FetchPlayersViewModel(players));
         }
 
         private async Task<(ServiceResponse<T>, Player)> ValidateRequest<T>(string gameId, T responseType)

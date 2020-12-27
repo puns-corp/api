@@ -10,12 +10,14 @@ namespace PunsApi.Services.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<ServiceResponse<bool>> Register(RegisterRequest request);
+        Task<ServiceResponse<AuthenticateViewModel>> Register(RegisterRequest request);
 
         Task<ServiceResponse<AuthenticateViewModel>> Login(LoginRequest request);
 
         Task<ServiceResponse<AuthenticateViewModel>> RefreshToken(RefreshTokenRequest request);
 
         Task<ServiceResponse<bool>> RevokeToken(RefreshTokenRequest request);
+
+        Task<ServiceResponse<FetchUserViewModel>> FetchUser();
     }
 }

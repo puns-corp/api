@@ -11,7 +11,12 @@ namespace PunsApi.Services.Interfaces
     public interface IRoomsService
     {
         Task<ServiceResponse<CreateRoomViewModel>> CreateRoom(CreateRoomRequest request);
+        
         Task<ServiceResponse<bool>> JoinRoom(string roomId);
-        Task<ServiceResponse<bool>> QuitRoom(string roomId);
+        
+        Task<ServiceResponse<FetchGamesViewModel>> FetchGames();
+
+        Task<ServiceResponse<FetchRoomsViewModel>> FetchRooms();
+
     }
 }
