@@ -65,5 +65,16 @@ namespace PunsApi.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> FetchUser()
+        {
+            var result = await _authenticationService.FetchUser();
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }

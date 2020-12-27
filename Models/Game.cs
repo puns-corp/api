@@ -24,12 +24,15 @@ namespace PunsApi.Models
 
         public Guid GameMasterId { get; set; }
 
-        [ForeignKey("CurrentPlayerId")]
-        public Player CurrentPlayer { get; set; }
+        [ForeignKey("ShowingPlayerId")]
+        public Player ShowingPlayer { get; set; }
 
-        public Guid CurrentPlayerId { get; set; }
+        public Guid? ShowingPlayerId { get; set; }
 
-        public ICollection<Player> Players { get; set; } 
+        public ICollection<Player> Players { get; set; }
 
+        public bool GameStarted { get; set; } = false;
+
+        public bool GameEnded { get; set; } = false;
     }
 }

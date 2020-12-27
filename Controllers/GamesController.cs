@@ -32,9 +32,9 @@ namespace PunsApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Join(string gameId)
+        public async Task<IActionResult> FetchPasswords()
         {
-            var result = await _gamesService.JoinGame(gameId);
+            var result = await _gamesService.FetchPasswords();
 
             if (!result.Success)
                 return BadRequest(result);
@@ -43,9 +43,9 @@ namespace PunsApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Quit(string gameId)
+        public async Task<IActionResult> FetchPlayers()
         {
-            var result = await _gamesService.QuitGame(gameId);
+            var result = await _gamesService.FetchPlayers();
 
             if (!result.Success)
                 return BadRequest(result);
@@ -54,9 +54,9 @@ namespace PunsApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> StartGame(string gameId)
+        public async Task<IActionResult> FetchGame()
         {
-            var result = await _gamesService.StartGame(gameId);
+            var result = await _gamesService.FetchGame();
 
             if (!result.Success)
                 return BadRequest(result);

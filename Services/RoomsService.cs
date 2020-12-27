@@ -66,7 +66,7 @@ namespace PunsApi.Services
             var room = await _context.Rooms.FirstOrDefaultAsync(x => x.Id.ToString() == roomId);
 
             if (room == null)
-                return ServiceResponse<bool>.Error("No room found");
+                return ServiceResponse<bool>.Error("No room found, roomId: " + roomId);
 
             player.RoomId = room.Id;
             _context.Update(player);
@@ -75,24 +75,32 @@ namespace PunsApi.Services
             return ServiceResponse<bool>.Ok(true, "Player joined to room");
         }
 
-        public async Task<ServiceResponse<bool>> QuitRoom(string roomId)
+        public async Task<ServiceResponse<FetchGamesViewModel>> FetchGames()
         {
             var player = await GetPlayer();
 
             if (player == null)
-                return ServiceResponse<bool>.Error("No user found");
+                return ServiceResponse<FetchGamesViewModel>.Error("No user found");
 
-            var room = await _context.Rooms.FirstOrDefaultAsync(x => x.Id.ToString() == roomId);
+            var roomId = player.RoomId.ToString();
 
-            if (room == null)
-                return ServiceResponse<bool>.Error("No room found");
+            var games = await _context.Games.Where(
+                    x => x.RoomId.ToString() == roomId).ToListAsync();
 
-            player.RoomId = null;
-            player.GameId = null;
-            _context.Update(player);
-            await _context.SaveChangesAsync();
+            return ServiceResponse<FetchGamesViewModel>.Ok(
+                new FetchGamesViewModel(games));
+        }
 
-            return ServiceResponse<bool>.Ok(true, "Player quit room");
+        public async Task<ServiceResponse<FetchRoomsViewModel>> FetchRooms()
+        {
+            var rooms = await _context.Rooms.ToListAsync();
+
+            if(rooms == null)
+                return ServiceResponse<FetchRoomsViewModel>.Error("No rooms found");
+
+            return ServiceResponse<FetchRoomsViewModel>.Ok(
+                new FetchRoomsViewModel(rooms));
+
         }
     }
 }

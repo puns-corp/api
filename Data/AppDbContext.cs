@@ -13,12 +13,38 @@ namespace PunsApi.Data
 
         public DbSet<Game> Games { get; set; }
 
-        public DbSet<Result> Results{ get; set; }
+        public DbSet<Result> Results { get; set; }
 
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public DbSet<Password> Passwords { get; set; }
 
         public DbSet<PasswordCategory> PasswordCategories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.GameMaster)
+                .WithOne(p => p.MasteredGame)
+                .HasForeignKey<Game>(g => g.GameMasterId);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(p => p.MasteredGame)
+                .WithOne(g => g.GameMaster)
+                .HasForeignKey<Player>(x => x.MasteredGameId);
+
+            modelBuilder.Entity<Game>()
+                .HasOne(g => g.ShowingPlayer)
+                .WithOne(p => p.GameWhereCurrentlyShowing)
+                .HasForeignKey<Game>(g => g.ShowingPlayerId);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(p => p.GameWhereCurrentlyShowing)
+                .WithOne(g => g.ShowingPlayer)
+                .HasForeignKey<Player>(x => x.GameWhereCurrentlyShowingId);
+
+
+        }
     }
+
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PunsApi.Data;
+using PunsApi.Dtos.Authenticate;
 using PunsApi.Helpers;
 using PunsApi.Helpers.Interfaces;
 using PunsApi.Models;
@@ -33,39 +34,45 @@ namespace PunsApi.Services
             _jwtHelper = jwtHelper;
         }
 
-        public async Task<ServiceResponse<bool>> Register(RegisterRequest request)
+        public async Task<ServiceResponse<AuthenticateViewModel>> Register(RegisterRequest request)
         {
             var isEmailValid = EmailValidator.IsEmailValid(request.Email);
 
             if(!isEmailValid)
-                return ServiceResponse<bool>.Error("Invalid email");
+                return ServiceResponse<AuthenticateViewModel>.Error("Invalid email");
 
             var player = await _context.Players.FirstOrDefaultAsync(
                 x => x.Email == request.Email);
 
             if (player != null)
-                return ServiceResponse<bool>.Error("Email already exist");
+                return ServiceResponse<AuthenticateViewModel>.Error("Email already exist");
 
             var (isPasswordValid, passwordMessage) = _passwordValidator.ValidateAsync(request.Password);
 
             if(!isPasswordValid)
-                return ServiceResponse<bool>.Error(passwordMessage);
+                return ServiceResponse<AuthenticateViewModel>.Error(passwordMessage);
 
             var hashedPassword = 
                 _passwordHasher.HashPassword(player, request.Password);
+
+
+            var refreshToken = _jwtHelper.GenerateRefreshToken();
 
             var newPlayer = new Player
             {
                 Email = request.Email,
                 PasswordHash = hashedPassword,
-                Nick = request.Nick
-                
+                Nick = request.Nick,
+                RefreshToken = refreshToken,
             };
 
             await _context.Players.AddAsync(newPlayer);
             await _context.SaveChangesAsync();
 
-            return ServiceResponse<bool>.Ok(true, "Player created");
+            var accessToken = _jwtHelper.GenerateJwtToken(newPlayer);
+
+            return ServiceResponse<AuthenticateViewModel>.Ok(
+                new AuthenticateViewModel(accessToken, refreshToken.Token));
         }
 
         public async Task<ServiceResponse<AuthenticateViewModel>> Login(LoginRequest request)
@@ -82,7 +89,7 @@ namespace PunsApi.Services
             if (verifyPasswordResult != PasswordVerificationResult.Success)
                 return ServiceResponse<AuthenticateViewModel>.Error("Invalid password");
 
-            var jwtToken = _jwtHelper.GenerateJwtToken(player);
+            var accessToken = _jwtHelper.GenerateJwtToken(player);
 
             var refreshToken = _jwtHelper.GenerateRefreshToken();
 
@@ -91,7 +98,7 @@ namespace PunsApi.Services
             await _context.SaveChangesAsync();
 
             return ServiceResponse<AuthenticateViewModel>.Ok(
-                new AuthenticateViewModel(player, jwtToken, refreshToken.Token));
+                new AuthenticateViewModel( accessToken, refreshToken.Token));
         }
 
         public async Task<ServiceResponse<AuthenticateViewModel>> RefreshToken(RefreshTokenRequest request)
@@ -100,8 +107,10 @@ namespace PunsApi.Services
                 x => x.RefreshToken).FirstOrDefaultAsync(
                 u => u.RefreshToken.Token == request.RefreshToken);
 
+            var token = _context.RefreshTokens.Take(1).ToList();
+
             if (user == null)
-                return ServiceResponse<AuthenticateViewModel>.Error("Invalid refresh token");
+                return ServiceResponse<AuthenticateViewModel>.Error("Invalid refresh token: " + request.RefreshToken + " expected: " + token[0].Token );
 
             if (!user.RefreshToken.IsActive)
                 return ServiceResponse<AuthenticateViewModel>.Error("Refresh token is not active");
@@ -111,9 +120,9 @@ namespace PunsApi.Services
             _context.Update(user);
             await _context.SaveChangesAsync();
 
-            var jwtToken = _jwtHelper.GenerateJwtToken(user);
+            var accessToken = _jwtHelper.GenerateJwtToken(user);
 
-            return ServiceResponse<AuthenticateViewModel>.Ok(new AuthenticateViewModel(user, jwtToken, newRefreshToken.Token));
+            return ServiceResponse<AuthenticateViewModel>.Ok(new AuthenticateViewModel(accessToken, newRefreshToken.Token));
         }
 
         public async Task<ServiceResponse<bool>> RevokeToken(RefreshTokenRequest request)
@@ -121,9 +130,7 @@ namespace PunsApi.Services
             if (string.IsNullOrEmpty(request.RefreshToken))
                 return ServiceResponse<bool>.Error("Refresh token is required");
 
-            var player = 
-                await _context.Players.Include(
-                    x => x.RefreshToken).FirstOrDefaultAsync(
+            var player = await _context.Players.Include(x => x.RefreshToken).FirstOrDefaultAsync(
                     u => u.RefreshToken.Token == request.RefreshToken);
 
             if (player == null)
@@ -139,6 +146,16 @@ namespace PunsApi.Services
             await _context.SaveChangesAsync();
 
             return ServiceResponse<bool>.Ok(true, "Token revoked");
+        }
+
+        public async Task<ServiceResponse<FetchUserViewModel>> FetchUser()
+        {
+            var player = await GetPlayer();
+
+            if (player == null)
+                return ServiceResponse<FetchUserViewModel>.Error("No user found");
+
+            return ServiceResponse<FetchUserViewModel>.Ok(new FetchUserViewModel(new UserDto(player)));
         }
     }
 }

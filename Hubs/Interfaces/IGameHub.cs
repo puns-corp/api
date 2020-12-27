@@ -2,17 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PunsApi.ViewModels.Games;
 
 namespace PunsApi.Hubs.Interfaces
 {
     public interface IGameHub
     {
-        Task PlayerJoined(string playerName);
+        Task PlayerJoined(string playerId);
 
-        Task PlayerQuit(string playerName);
+        Task PlayerQuit(string playerId);
 
         Task GameStarted();
 
-        Task SendMessageToTest(string message);
+        Task GameEnded();
+
+        Task PlayerGuessed(string nextPlayerId);
+
+        Task SwitchPlayer();
+
+        Task NewShowingPlayer(string playerId);
+
+        Task PlayerScored(string nextPlayerId);
+
+        Task SendErrorMessage(string errorMessage);
     }
 }
