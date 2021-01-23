@@ -44,6 +44,8 @@ namespace PunsApi.Hubs
 
             if (!result.Success)
                 await Clients.Caller.SendErrorMessage(result.Message);
+
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
         }
 
         public async Task GameStart(string gameId)
@@ -62,6 +64,11 @@ namespace PunsApi.Hubs
 
             if (!result.Success)
                 await Clients.Caller.SendErrorMessage(result.Message);
+            if (result.Success)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, gameId);
+                await _gamesService.QuitGame(gameId, Context.ConnectionId);
+            }
         }
 
         public async Task PlayerGuessed(string gameId, string nextPlayerId)

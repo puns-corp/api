@@ -152,9 +152,6 @@ namespace PunsApi.Services
             if (!response.Success)
                 return response;
 
-            if (!player.IsGameMaster)
-                return ServiceResponse<bool>.Error("Player isn't game master");
-
             var game = _context.Games.FirstOrDefault(x => x.Id == player.GameId);
 
             if (game == null)
@@ -193,7 +190,9 @@ namespace PunsApi.Services
             if (game.ShowingPlayerId != null)
                 player.Score++;
             if (player.Score >= 10)
+            {
                 return await GameEnd(game.Id.ToString());
+            }
 
             _context.Players.Update(player);
             game.ShowingPlayerId = player.Id;

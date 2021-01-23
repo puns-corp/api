@@ -158,8 +158,6 @@ namespace PunsAPI
                 endpoints.MapHub<GameHub>("/gameHub");
             });
 
-            app.UseHttpsRedirection();
-
             DbPreparation.Migrate(app);
         }
     }
