@@ -18,4 +18,6 @@ RUN dotnet publish "Api.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Api.dll
+ENTRYPOINT [ "dotnet", "Api.dll" ]
+# Use the following instead for Heroku
+#CMD ASPNETCORE_URLS=http://*:$PORT dotnet Api.dll
