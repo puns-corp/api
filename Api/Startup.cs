@@ -47,34 +47,14 @@ namespace PunsAPI
             {
                 options.AddDefaultPolicy(builder =>
                 builder
-                    .WithOrigins("http://localhost:8080")
+                    .WithOrigins("https://puns-corp.github.io", "http://localhost:8080")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
             );
             });
 
-            var server = Configuration["DBServer"];
-            var port = Configuration["DBPort"];
-            var user = Configuration["DBUser"];
-            var password = Configuration["DBPassword"];
-            var database = Configuration["Database"];
-
-            var connectionString =
-                $"Server={server},{port};Database={database};User={user};Password={password}";
-
-            bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
-            if (isDevelopment)
-            {
-                connectionString = Configuration.GetConnectionString("SQLExpress");
-
-            }
-            //var connectionString = Configuration.GetConnectionString("SQLExpress");
-
-            services.AddDbContext<AppDbContext>(
-                x => x.UseSqlServer(connectionString));
-
-
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SQLExpress")));
 
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
